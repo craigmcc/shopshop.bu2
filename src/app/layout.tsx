@@ -16,6 +16,8 @@ import {ClerkProvider} from "@clerk/nextjs";
 
 import './globals.css'
 import {ModalProvider} from "@/components/layout/ModalProvider";
+import {TopBar} from "@/components/layout/TopBar";
+import { cn } from '@/lib/utils'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -35,7 +37,13 @@ export default function RootLayout({
         <ClerkProvider>
             <ModalProvider/>
             <html lang="en">
-            <body className={inter.className}>{children}</body>
+            <body className={cn(
+                inter.className,
+                "bg-indigo-50"
+            )}>
+            <TopBar/>
+            {children}
+            </body>
             </html>
         </ClerkProvider>
     )
