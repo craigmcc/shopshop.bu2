@@ -73,7 +73,7 @@ model Profile {
   /// User's name
   name     String @db.Text
   /// Unique identifier for this User in Clerk's database
-  userId   String @db.Text
+  userId   String @unique @db.Text
 
   /// Created at timestamp
   createdAt DateTime @default(now())
