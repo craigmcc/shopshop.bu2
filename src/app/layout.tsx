@@ -15,26 +15,28 @@ import {ClerkProvider} from "@clerk/nextjs";
 // Internal Modules ----------------------------------------------------------
 
 import './globals.css'
+import {ModalProvider} from "@/components/layout/ModalProvider";
 
 const inter = Inter({ subsets: ['latin'] })
 
 // Public Objects -----------------------------------------------------------
 
 export const metadata: Metadata = {
-  title: 'ShopShop',
-  description: 'Shipping List Application',
+    title: 'ShopShop',
+    description: 'Shipping List Application',
 }
 
 export default function RootLayout({
-                                     children,
+                                       children,
                                    }: {
-  children: React.ReactNode
+    children: React.ReactNode
 }) {
-  return (
-      <ClerkProvider>
-        <html lang="en">
-        <body className={inter.className}>{children}</body>
-        </html>
-      </ClerkProvider>
-  )
+    return (
+        <ClerkProvider>
+            <ModalProvider/>
+            <html lang="en">
+            <body className={inter.className}>{children}</body>
+            </html>
+        </ClerkProvider>
+    )
 }
