@@ -9,9 +9,11 @@
 // External Modules ----------------------------------------------------------
 
 import {
+    Plus,
     ShoppingCart
 } from "lucide-react";
 
 export const Icons = {
+    Add: Plus,
     ShoppingCart: ShoppingCart,
 }
