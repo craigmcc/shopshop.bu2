@@ -35,10 +35,6 @@ export const TopBar = () => {
                 </Link>
             </div>
             <div className="flex flex-1 items-center justify-end">
-                <span>TODO - sign in / out buttons</span>
-            </div>
-{/*
-            <div>
                 <SignedIn>
                     <UserButton showName/>
                 </SignedIn>
@@ -46,7 +42,6 @@ export const TopBar = () => {
                     <SignInButton/>
                 </SignedOut>
             </div>
-*/}
         </header>
     )
 
