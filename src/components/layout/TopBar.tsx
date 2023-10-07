@@ -40,7 +40,7 @@ export const TopBar = () => {
 {/*
             <div>
                 <SignedIn>
-                    <UserButton/>
+                    <UserButton showName/>
                 </SignedIn>
                 <SignedOut>
                     <SignInButton/>
