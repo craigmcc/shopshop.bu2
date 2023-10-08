@@ -8,9 +8,10 @@
 
 // External Modules ----------------------------------------------------------
 
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import type { Metadata } from 'next';
+import {Inter} from "next/font/google";
 import {ClerkProvider} from "@clerk/nextjs";
+import {ThemeProvider} from "@/components/providers/ThemeProvider";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -36,13 +37,20 @@ export default function RootLayout({
     return (
         <ClerkProvider>
             <ModalProvider/>
-            <html lang="en">
+            <html lang="en" suppressHydrationWarning>
             <body className={cn(
                 inter.className,
                 "bg-indigo-50"
             )}>
-            <TopBar/>
-            {children}
+            <ThemeProvider
+                attribute="class"
+                defaultTheme="light"
+                enableSystem={false}
+                storageKey="shopshop-theme"
+            >
+                <TopBar/>
+                {children}
+            </ThemeProvider>
             </body>
             </html>
         </ClerkProvider>

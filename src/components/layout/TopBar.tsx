@@ -19,6 +19,7 @@ import {
 // Internal Modules ----------------------------------------------------------
 
 import {Icons} from "@/components/layout/Icons";
+import {ModeToggle} from "@/components/layout/ModeToggle";
 
 // Public Objects ------------------------------------------------------------
 
@@ -33,6 +34,9 @@ export const TopBar = () => {
                         ShopShop
                     </span>
                 </Link>
+            </div>
+            <div className="flex flex-1 px-2 items-center">
+                <ModeToggle/>
             </div>
             <div className="flex flex-1 items-center justify-end">
                 <SignedIn>
