@@ -1,6 +1,27 @@
-import Image from 'next/image'
+// app/(setup)/page.tsx
 
-export default function Home() {
+/**
+ * Overall application home page.
+ *
+ * @packageDocumentation
+ */
+
+// External Modules ----------------------------------------------------------
+
+import Image from 'next/image';
+
+// Internal Modules ----------------------------------------------------------
+
+import {initialProfile} from "@/lib/initialProfile";
+
+// Public Objects ------------------------------------------------------------
+
+export default async function Home() {
+
+  // Ensure that there is a signed-in User, setting up a corresponding
+  // Profile if one does not already exist.
+  const profile = await initialProfile();
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
