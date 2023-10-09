@@ -19,7 +19,7 @@ import {initialProfile} from "@/lib/initialProfile";
 
 // Public Objects ------------------------------------------------------------
 
-export default async function Home() {
+export default async function SetupPage() {
 
   // Ensure that there is a signed-in User, setting up a corresponding
   // Profile if one does not already exist.
