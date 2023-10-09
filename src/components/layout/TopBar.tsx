@@ -26,7 +26,7 @@ import {ModeToggle} from "@/components/layout/ModeToggle";
 export const TopBar = () => {
 
     return (
-        <header className="bg-indigo-100 flex p-2 w-full">
+        <header className="bg-indigo-100 dark:bg-indigo-800 flex p-2 w-full">
             <div>
                 <Link href="/" className="flex items-center space-x-2">
                     <Icons.ShoppingCart className="h-8 w-8"/>
