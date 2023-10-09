@@ -8,10 +8,12 @@
 
 // External Modules ----------------------------------------------------------
 
-import Image from 'next/image';
+import Image from "next/image";
+import {redirect} from "next/navigation";
 
 // Internal Modules ----------------------------------------------------------
 
+import {db} from "@/lib/db";
 import {initialProfile} from "@/lib/initialProfile";
 
 // Public Objects ------------------------------------------------------------
@@ -21,6 +23,22 @@ export default async function Home() {
   // Ensure that there is a signed-in User, setting up a corresponding
   // Profile if one does not already exist.
   const profile = await initialProfile();
+
+  // Find the first List this User is a member of (if any)
+  const list = await db.list.findFirst({
+    where: {
+      members: {
+        some: {
+          profileId: profile.id
+        }
+      }
+    }
+  });
+
+  // If there is such a List, navigate to the corresponding page.
+  if (list) {
+    return redirect(`/lists/${list.id}`);
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
