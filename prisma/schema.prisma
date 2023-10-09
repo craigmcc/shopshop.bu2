@@ -31,6 +31,7 @@ model List {
   /// Profile of the User that created this List
   profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
+  @@index([profileId])
   @@map("lists")
 }
 
@@ -55,6 +56,8 @@ model Member {
   /// Profile of the User that is the subject of this Membership
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
+  @@index([listId])
+  @@index([profileId])
   @@map("members")
 }
 
