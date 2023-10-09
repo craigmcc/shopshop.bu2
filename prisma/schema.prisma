@@ -71,6 +71,8 @@ enum MemberRole {
 model Profile {
   /// Primary key for this User
   id       String @id @default(uuid())
+  /// Email address (primary) for this User
+  email    String @db.Text
   /// Avatar image URL
   imageUrl String @db.Text
   /// User's name
