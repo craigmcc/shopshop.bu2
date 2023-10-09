@@ -9,6 +9,7 @@
 // External Modules ----------------------------------------------------------
 
 import {currentUser, redirectToSignIn} from "@clerk/nextjs";
+import {Profile} from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -16,7 +17,7 @@ import {db} from "@/lib/db";
 
 // Public Objects ------------------------------------------------------------
 
-export const initialProfile = async () => {
+export const initialProfile = async (): Promise<Profile> => {
 
     // Request sign in if needed
     const user = await currentUser();
