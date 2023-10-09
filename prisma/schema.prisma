@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Individual shopping list
+model List {
+  /// Primary key for this List
+  id         String @id @default(uuid())
+  /// Invite code sent to invite a different User to this List
+  inviteCode String @db.Text
+  /// List's name
+  name       String @db.Text
+
+  /// Created at timestamp
+  createdAt DateTime @default(now())
+  /// Updated at timestamp
+  updatedAt DateTime @updatedAt
+
+  /// Members of this List
+  members   Member[]
+  /// Profile ID of the User that created this List
+  profileId String
+  /// Profile of the User that created this List
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@map("lists")
+}
+
+/// Membership of a particular User to a particular List
+model Member {
+  /// Primary key for this Member
+  id   String     @id @default(uuid())
+  /// Role of this Member on this List
+  role MemberRole @default(GUEST)
+
+  /// Created at timestamp
+  createdAt DateTime @default(now())
+  /// Updated at timestamp
+  updatedAt DateTime @updatedAt
+
+  /// ID of the List that is the subject of this Membership
+  listId    String
+  /// List that is the subject of this Membership
+  list      List    @relation(fields: [listId], references: [id], onDelete: Cascade)
+  /// ID of the User that is the subject of this Membership
+  profileId String
+  /// Profile of the User that is the subject of this Membership
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([listId])
+  @@index([profileId])
+  @@map("members")
+}
+
+/// Role of a Member in a List
+enum MemberRole {
+  ADMIN
+  GUEST
+}
+
+/// User's local profile
+model Profile {
+  /// Primary key for this User
+  id       String @id @default(uuid())
+  /// Avatar image URL
+  imageUrl String @db.Text
+  /// User's name
+  name     String @db.Text
+  /// Unique identifier for this User in Clerk's database
+  userId   String @unique @db.Text
+
+  /// Created at timestamp
+  createdAt DateTime @default(now())
+  /// Updated at timestamp
+  updatedAt DateTime @updatedAt
+
+  /// Lists created by this User
+  lists   List[]
+  /// Members this User is part of
+  members Member[]
+
+  @@map("profiles")
+}
