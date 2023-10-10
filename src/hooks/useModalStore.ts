@@ -62,7 +62,10 @@ export const useModalStore = create<ModalStore>((set) => ({
     data: {},
     isOpen: false,
     onClose: () => set({type: null, isOpen: false}),
-    onOpen: (type, data = {}) => set({isOpen: true, type, data}),
+    onOpen: (type, data = {}) => {
+        console.log(`useModalStore.onOpen, type=${type}, data=${JSON.stringify(data)}`);
+        set({isOpen: true, type, data});
+    },
     type: null,
 }));
 

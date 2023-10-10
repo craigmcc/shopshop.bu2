@@ -11,12 +11,12 @@
 import type { Metadata } from 'next';
 import {Inter} from "next/font/google";
 import {ClerkProvider} from "@clerk/nextjs";
-import {ThemeProvider} from "@/components/providers/ThemeProvider";
 
 // Internal Modules ----------------------------------------------------------
 
 import './globals.css'
-import {ModalProvider} from "@/components/layout/ModalProvider";
+import {ModalProvider} from "@/components/providers/ModalProvider";
+import {ThemeProvider} from "@/components/providers/ThemeProvider";
 import {TopBar} from "@/components/layout/TopBar";
 import { cn } from '@/lib/utils'
 
@@ -36,7 +36,6 @@ export default function RootLayout({
 }) {
     return (
         <ClerkProvider>
-            <ModalProvider/>
             <html lang="en" suppressHydrationWarning>
             <body className={cn(
                 inter.className,
@@ -48,10 +47,9 @@ export default function RootLayout({
                 enableSystem={false}
                 storageKey="shopshop-theme"
             >
+                <ModalProvider/>
                 {/*<TopBar/>*/}
-                <div className="h-full w-full">
-                    {children}
-                </div>
+                {children}
             </ThemeProvider>
             </body>
             </html>

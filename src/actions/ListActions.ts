@@ -10,7 +10,6 @@
 
 // External Modules ----------------------------------------------------------
 
-import {auth} from "@clerk/nextjs";
 import {List, MemberRole, Prisma, Profile} from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
