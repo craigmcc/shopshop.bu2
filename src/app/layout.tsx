@@ -48,8 +48,10 @@ export default function RootLayout({
                 enableSystem={false}
                 storageKey="shopshop-theme"
             >
-                <TopBar/>
-                {children}
+                {/*<TopBar/>*/}
+                <div className="h-full w-full">
+                    {children}
+                </div>
             </ThemeProvider>
             </body>
             </html>

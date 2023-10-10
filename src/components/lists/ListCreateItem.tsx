@@ -1,6 +1,6 @@
 "use client"
 
-// components/lists/CreateListAction.tsx
+// components/lists/ListCreateItem.tsx
 
 /**
  * Action element that triggers opening the "Create List" modal.
@@ -18,7 +18,7 @@ import {ModalType, useModalStore} from "@/hooks/useModalStore";
 
 // Public Objects ------------------------------------------------------------
 
-export const CreateListAction = () => {
+export const ListCreateItem = () => {
 
     const {onOpen} = useModalStore();
 
@@ -33,7 +33,7 @@ export const CreateListAction = () => {
                     className="group flex items-center"
                     onClick={() => onOpen(ModalType.CREATE_LIST)}
                 >
-                    <div className="flex mx-3 h-[48px] w-[48px] rounded-[24px] group-hover:rounded-[16px] transition-all overflow-hidden items-center justify-center bg-background dark:bg-neutral-700 group-hover:bg-emerald-500">
+                    <div className="flex mx-3 h-[48px] w-[48px] rounded-[24px] group-hover:rounded-[16px] transition-all overflow-hidden items-center justify-center bg-indigo-400 dark:bg-neutral-700 group-hover:bg-emerald-500">
                         <Icons.Add
                             className="group-hover:text-white transition text-emerald-500"
                             size={25}
