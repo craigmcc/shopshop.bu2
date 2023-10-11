@@ -27,7 +27,7 @@ interface ListNavigationItemProps {
     name: string;
 }
 
-export const ListNavigationItem = (props: ListNavigationItemProps) => {
+export const NavigationItem = (props: ListNavigationItemProps) => {
 
     const router = useRouter();
 

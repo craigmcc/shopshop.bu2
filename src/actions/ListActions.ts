@@ -25,26 +25,71 @@ import logger from "@/lib/ServerLogger";
 
 /**
  * Return all Lists that the specified Profile is a Member of,
- * in ascending order by name.
+ * in ascending order by name.  If there are none, return an empty array.
  *
- * @param profile                       Profile of the requesting User.
+ * @param profileId                     ID of the Profile of the requesting User.
  */
-export const all = async (profile: Profile): Promise<List[]> => {
-
-    const lists = await db.list.findMany({
-        orderBy: [
-            { name: "asc" },
-        ],
-        where: {
-            members: {
-                some: {
-                    profileId: profile.id,
+export const all = async (profileId: string): Promise<List[]> => {
+    logger.info({
+        context: "ProfileActions.all",
+        profileId: profileId,
+    });
+    try {
+        const lists = await db.list.findMany({
+            orderBy: [
+                {name: "asc"},
+            ],
+            where: {
+                members: {
+                    some: {
+                        profileId: profileId,
+                    }
                 }
             }
-        }
-    });
-    return lists;
+        });
+        return lists;
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "ListActions.all"
+        );
+    }
 
+}
+
+/**
+ * Find and return the List instance with the specified listId for the
+ * specified profileId, if any.  If none can be found, return null.
+ *
+ * @param profileId                     ID of the signed-in User
+ * @param listId                        ID of the List to be returned
+ *
+ * @throws ServerError                  If some other error occurs
+ */
+export const find = async (profileId: string, listId: string): Promise<List | null> => {
+    logger.info({
+        context: "ListActions.find",
+        profileId: profileId,
+        listId: listId,
+    });
+    try {
+        const list = await db.list.findUnique({
+            where: {
+                id: listId,
+                members: {
+                    some: {
+                        profileId: profileId,
+                    }
+                }
+            }
+        });
+        return list;
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "ListActions.find",
+        );
+    }
 }
 
 /**
@@ -85,7 +130,7 @@ export const insert = async (
                 profileId: profile.id,
                 members: {
                     create: [
-                        {profileId: profile.id, role: memberRole}
+                        {profileId: profile.id, role: memberRole},
                     ]
                 },
             },

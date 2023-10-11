@@ -1,6 +1,6 @@
 "use client"
 
-// components/lists/ListCreateItem.tsx
+// components/navigation/NavigationAction.tsx
 
 /**
  * Action element that triggers opening the "Create List" modal.
@@ -18,7 +18,7 @@ import {ModalType, useModalStore} from "@/hooks/useModalStore";
 
 // Public Objects ------------------------------------------------------------
 
-export const ListCreateItem = () => {
+export const NavigationAction = () => {
 
     const {onOpen} = useModalStore();
 

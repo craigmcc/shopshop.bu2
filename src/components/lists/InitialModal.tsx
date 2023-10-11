@@ -15,7 +15,6 @@
 import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
-import {v4 as uuidv4} from "uuid";
 import * as z from "zod";
 import {useAuth} from "@clerk/nextjs";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -78,7 +77,6 @@ export const InitialModal = (props: InitialModalProps) => {
     const form = useForm<z.infer<typeof formSchema>>({
         defaultValues: {
             name: "",
-            inviteCode: uuidv4(),
         },
         mode: "onBlur",
         resolver: zodResolver(formSchema)
@@ -88,7 +86,7 @@ export const InitialModal = (props: InitialModalProps) => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             await ListActions.insert(
-                { ...values, profileId: props.profile.id },
+                values,
                 MemberRole.ADMIN,
             );
             form.reset();

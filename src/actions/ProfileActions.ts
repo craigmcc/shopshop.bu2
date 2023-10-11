@@ -15,20 +15,20 @@ import {Prisma, Profile} from "@prisma/client";
 // Internal Modules ----------------------------------------------------------
 
 import {db} from "@/lib/db";
-import {NotFound, ServerError} from "@/lib/HttpErrors";
+import {ServerError} from "@/lib/HttpErrors";
 import logger from "@/lib/ServerLogger";
 
 // Public Objects ------------------------------------------------------------
 
 /**
- * Return the Profile for the specified *userId* (not id).
+ * Return the Profile for the specified *userId* (not id).  If none is found,
+ * return null.
  *
  * @param userId                        User ID of the requested Profile
  *
- * @throws NotFound                     If no such Profile can be found
  * @throws ServerError                  If some other error occurs
  */
-export const findByUserId = async (userId: string): Promise<Profile> => {
+export const findByUserId = async (userId: string): Promise<Profile | null> => {
     logger.info({
         context: "ProfileActions.findByUserId",
         userId: userId,
@@ -39,23 +39,12 @@ export const findByUserId = async (userId: string): Promise<Profile> => {
                 userId: userId,
             }
         });
-        if (result) {
-            return result;
-        } else {
-            throw new NotFound(
-                `Missing Profile for userId '${userId}'`,
-                "ProfileActions.findByUserId",
-            );
-        }
+        return result;
     } catch (error) {
-        if (error instanceof NotFound) {
-            throw error;
-        } else {
-            throw new ServerError(
-                error as Error,
-                "ProfileActions.findByUserId",
-            );
-        }
+        throw new ServerError(
+            error as Error,
+            "ProfileActions.findByUserId",
+        );
     }
 
 }
