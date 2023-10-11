@@ -27,7 +27,7 @@ import {
  * Identifiers for the modals that can be managed.
  */
 export enum ModalType {
-    CREATE_LIST = "CreateList",
+    LIST_CREATE = "ListCreate",
 }
 
 /**
