@@ -14,13 +14,14 @@
 
 import {useRouter} from "next/navigation";
 import {useForm} from "react-hook-form";
-import {v4 as uuidv4} from "uuid";
+//import {v4 as uuidv4} from "uuid";
 import * as z from "zod";
 //import {useAuth} from "@clerk/nextjs";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {MemberRole, Profile} from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
+
 import * as ListActions from "@/actions/ListActions";
 import {Button} from "@/components/ui/button";
 import {
@@ -37,12 +38,14 @@ import {ModalType, useModalStore} from "@/hooks/useModalStore";
 
 // Public Objects ------------------------------------------------------------
 
+/*
 type ListCreateModalProps = {
     // Profile of the signed-in User
     profile: Profile;
 }
+*/
 
-export const ListCreateModal = (props: ListCreateModalProps) => {
+export const ListCreateModal = (/*props: ListCreateModalProps*/) => {
 
     const {isOpen, onClose, type} = useModalStore();
     const router = useRouter();
@@ -52,9 +55,11 @@ export const ListCreateModal = (props: ListCreateModalProps) => {
         name: z.string().min(1, {
             message: "List name is required",
         }),
+/*
         inviteCode: z.string().min(1, {
             message: "Invite Code is required",
         }),
+*/
         /*
                 profileId: z.string().min(1, {
                     message: "Profile ID is required",
@@ -65,7 +70,7 @@ export const ListCreateModal = (props: ListCreateModalProps) => {
     const form = useForm<z.infer<typeof formSchema>>({
         defaultValues: {
             name: "",
-            inviteCode: uuidv4(),
+//            inviteCode: uuidv4(),
         },
         mode: "onBlur",
         resolver: zodResolver(formSchema)
@@ -75,7 +80,8 @@ export const ListCreateModal = (props: ListCreateModalProps) => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             await ListActions.insert(
-                { ...values, profileId: props.profile.id },
+//                { ...values, profileId: props.profile.id },
+                values,
                 MemberRole.ADMIN,
             );
             form.reset();
