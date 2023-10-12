@@ -157,3 +157,42 @@ export const insert = async (
     }
 
 }
+
+/**
+ * Generate a new inviteCode and return the updated List.
+ *
+ * @param listId                        ID of the list being invited to
+ *
+ * @throws Forbidden                    If no User is signed in
+ * @throws NotUnique                    If a unique key violation is attempted
+ * @throws ServerError                  If some other error occurs
+ */
+export const updateInviteCode = async (listId: string): Promise<List> => {
+
+    const profile = await currentProfile();
+    if (!profile) {
+        throw new Forbidden(
+            "Must be signed in",
+            "ListActions.insert",
+        );
+    }
+
+    try {
+        const list = await db.list.update({
+            data: {
+              inviteCode: uuidv4(),
+            },
+            where: {
+                id: listId,
+                profileId: profile.id,
+            },
+        });
+        return list;
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "ListActions.invite",
+        );
+    }
+
+}

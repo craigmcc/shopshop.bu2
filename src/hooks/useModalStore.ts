@@ -29,10 +29,10 @@ import {
 export enum ModalType {
     LIST_EDIT = "ListEdit",
     LIST_INSERT = "ListInsert",
+    LIST_INVITE = "ListInvite",
     LIST_LEAVE = "ListLeave",
     LIST_REMOVE = "ListRemove",
     MEMBERS_EDIT = "MembersEdit",
-    PROFILE_INVITE = "ProfileInvite",
 }
 
 /**

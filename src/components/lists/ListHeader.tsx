@@ -66,7 +66,7 @@ export const ListHeader = (props: ListHeaderProps) => {
                 {isAdmin && (
                     <DropdownMenuItem
                         className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm cursor-pointer"
-                        onClick={() => onOpen(ModalType.PROFILE_INVITE, { list: props.list })}
+                        onClick={() => onOpen(ModalType.LIST_INVITE, { list: props.list })}
                     >
                         Invite People
                         <Icons.UserPlus className="h-4 w-4 ml-auto" />
