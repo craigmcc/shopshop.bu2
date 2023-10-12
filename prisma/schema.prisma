@@ -15,7 +15,7 @@ model List {
   /// Primary key for this List
   id         String @id @default(uuid())
   /// Invite code sent to invite a different User to this List
-  inviteCode String @db.Text
+  inviteCode String @unique @db.Text
   /// List's name
   name       String @db.Text
 

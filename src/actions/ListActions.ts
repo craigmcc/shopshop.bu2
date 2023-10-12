@@ -106,6 +106,38 @@ export const find = async (profileId: string, listId: string)
 }
 
 /**
+ * Find and return the List, where the specified Profile is a Member, and the
+ * specified invite code is present.  If not found, return null
+ *
+ * @param profileId                     ID of the proposed Profile
+ * @param inviteCode                    The specified invite code
+ *
+ * @throws ServerError                  If some other error occurs
+ */
+export const findByInviteCode = async (profileId: string, inviteCode: string): Promise<List | null> =>  {
+
+    try {
+        const existingList = await db.list.findFirst({
+            where: {
+                inviteCode: inviteCode,
+                members: {
+                    some: {
+                        profileId: profileId,
+                    }
+                }
+            },
+        });
+        return existingList;
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "ListActions.findByInviteCode",
+        );
+    }
+
+}
+
+/**
  * Create and return a new List instance, if it satisfies validation.
  * The calling User's Profile will also be assigned the specified MemberRole
  * for a Member in this List.
@@ -159,6 +191,43 @@ export const insert = async (
 }
 
 /**
+ * Insert a new Member (as a MemberRole.GUEST) based on an invite code.
+ * Return the updated List.
+ *
+ * @param profileId                     ID of the Profile to be added
+ * @param inviteCode                    The specified invite code
+ * @param role                          Role of the new Member [GUEST]
+ *
+ * @throws ServerError                  If some other error occurs
+ */
+export const insertMember =
+    async (profileId: string, inviteCode: string, role: MemberRole = MemberRole.GUEST): Promise<List> => {
+
+    try {
+        const list = await db.list.update({
+            data: {
+                members: {
+                    create: [
+                        { profileId: profileId, role: role }
+                    ],
+                },
+            },
+            where: {
+                inviteCode: inviteCode,
+            },
+        });
+        return list;
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "ListActions.insertMember",
+        );
+    }
+
+}
+
+
+/**
  * Generate a new inviteCode and return the updated List.
  *
  * @param listId                        ID of the list being invited to
@@ -191,7 +260,7 @@ export const updateInviteCode = async (listId: string): Promise<List> => {
     } catch (error) {
         throw new ServerError(
             error as Error,
-            "ListActions.invite",
+            "ListActions.updateInviteCode",
         );
     }
 
