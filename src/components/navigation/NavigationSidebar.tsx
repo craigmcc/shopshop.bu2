@@ -32,7 +32,7 @@ export const NavigationSidebar =  async () => {
     const lists = await ListActions.all(profile.id);
 
     return (
-        <div className="space-y-4 flex flex-col items-center h-full w-full bg-indigo-200 dark:bg-[#1E1F22] dark:text-zinc-100">
+        <div className="space-y-4 flex flex-col items-center h-full w-full dark:bg-[#1E1F22] bg-[#E3E5E8] dark:text-zinc-100">
             <NavigationAction/>
             <Separator className="h-[2px] bg-yellow-300 dark:bg-yellow-500 rounded-md w-10 mx-auto"/>
             <ScrollArea className="flex-1 w-full mb-4">

@@ -13,9 +13,8 @@ import {redirectToSignIn} from "@clerk/nextjs";
 
 // Internal Modules ----------------------------------------------------------
 
-import * as ListActions from "@/actions/ListActions";
+import {ListSidebar} from "@/components/lists/ListSidebar";
 import {currentProfile} from "@/lib/clerk";
-import logger from "@/lib/ServerLogger";
 
 // Public Objects ------------------------------------------------------------
 
@@ -31,15 +30,11 @@ const ListIdLayout = async (props: ListIdLayoutProps) => {
         return redirectToSignIn();
     }
 
-    const list = await ListActions.find(profile.id, props.params.listId);
-    if (!list) {
-        return redirect("/");
-    }
 
     return (
         <div className="h-full">
             <div className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
-                Member Sidebar
+                <ListSidebar listId={props.params.listId}/>
             </div>
             <main className="h-full md:pl-60">
                 {props.children}

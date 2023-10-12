@@ -17,7 +17,7 @@ import {useAuth} from "@clerk/nextjs";
 // Internal Modules ----------------------------------------------------------
 
 // TODO - imports of components that are modals go here
-import {ListCreateModal} from "@/components/lists/ListCreateModal";
+import {ListInsertModal} from "@/components/lists/ListInsertModal";
 
 // Public Objects ------------------------------------------------------------
 
@@ -40,7 +40,7 @@ export const ModalProvider = () => {
     return (
         <>
             {/* TODO - instantiations of components that are modal go here */}
-            <ListCreateModal/>
+            <ListInsertModal/>
         </>
     )
 

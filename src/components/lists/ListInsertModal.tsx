@@ -1,6 +1,6 @@
 "use client"
 
-// components/lists/InitialModal.tsx
+// components/lists/ListInsertModal.tsx
 
 /**
  * Initial version of a "create list" modal.  Will get replaced later.
@@ -38,11 +38,11 @@ import {ModalType, useModalStore} from "@/hooks/useModalStore";
 
 // Public Objects ------------------------------------------------------------
 
-export const ListCreateModal = (/*props: ListCreateModalProps*/) => {
+export const ListInsertModal = (/*props: ListCreateModalProps*/) => {
 
     const {isOpen, onClose, type} = useModalStore();
     const router = useRouter();
-    const isModalOpen = isOpen && type === ModalType.LIST_CREATE;
+    const isModalOpen = isOpen && type === ModalType.LIST_INSERT;
 
     const formSchema = z.object({
         name: z.string().min(1, {

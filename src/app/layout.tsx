@@ -39,7 +39,7 @@ export default function RootLayout({
             <html lang="en" suppressHydrationWarning>
             <body className={cn(
                 inter.className,
-                "bg-indigo-50 dark:indigo-900"
+                // "bg-indigo-50 dark:indigo-900"
             )}>
             <ThemeProvider
                 attribute="class"

@@ -11,7 +11,7 @@
 // External Modules ----------------------------------------------------------
 
 import {v4 as uuidv4} from "uuid";
-import {List, MemberRole, Prisma, Profile} from "@prisma/client";
+import {List, Member, MemberRole, Prisma, Profile} from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -19,6 +19,7 @@ import {db} from "@/lib/db";
 import {BadRequest, Forbidden, NotFound, NotUnique, ServerError} from "@/lib/HttpErrors";
 import {currentProfile} from "@/lib/clerk";
 import logger from "@/lib/ServerLogger";
+import {ListWithMembersWithProfiles} from "@/types";
 
 
 // Public Objects ------------------------------------------------------------
@@ -66,14 +67,26 @@ export const all = async (profileId: string): Promise<List[]> => {
  *
  * @throws ServerError                  If some other error occurs
  */
-export const find = async (profileId: string, listId: string): Promise<List | null> => {
+export const find = async (profileId: string, listId: string)
+    : Promise<ListWithMembersWithProfiles | null> => {
     logger.info({
         context: "ListActions.find",
         profileId: profileId,
         listId: listId,
     });
     try {
+        // TODO - make the include stuff conditional?
         const list = await db.list.findUnique({
+            include: {
+                members: {
+                    include: {
+                        profile: true,
+                    },
+                    orderBy: {
+                        role: "asc",
+                    }
+                }
+            },
             where: {
                 id: listId,
                 members: {

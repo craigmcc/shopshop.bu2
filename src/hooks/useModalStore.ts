@@ -27,7 +27,12 @@ import {
  * Identifiers for the modals that can be managed.
  */
 export enum ModalType {
-    LIST_CREATE = "ListCreate",
+    LIST_EDIT = "ListEdit",
+    LIST_INSERT = "ListInsert",
+    LIST_LEAVE = "ListLeave",
+    LIST_REMOVE = "ListRemove",
+    MEMBERS_EDIT = "MembersEdit",
+    PROFILE_INVITE = "ProfileInvite",
 }
 
 /**
