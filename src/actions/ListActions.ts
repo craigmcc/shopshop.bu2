@@ -226,6 +226,44 @@ export const insertMember =
 
 }
 
+/**
+ * Update the specified List with the specified new data.
+ *
+ * @param listId                        ID of the List being updated
+ * @param list                          Data for the updates to this List
+ *
+ * @throws Forbidden                    If no User is signed in
+ * @throws ServerError                  If some other error occurs
+ */
+export const update = async (listId: string, list: Prisma.ListUpdateInput): Promise<List> => {
+
+    const profile = await currentProfile();
+    if (!profile) {
+        throw new Forbidden(
+            "Must be signed in",
+            "ListActions.updateInviteCode",
+        );
+    }
+    // TODO - check admin role?
+
+    try {
+        const result = db.list.update({
+            data: list,
+            where: {
+                id: listId,
+                profileId: profile.id,    // TODO - only list creator allowed
+            }
+        });
+        return result;
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "ListActions.update",
+        );
+    }
+
+}
+
 
 /**
  * Generate a new inviteCode and return the updated List.
@@ -233,7 +271,6 @@ export const insertMember =
  * @param listId                        ID of the list being invited to
  *
  * @throws Forbidden                    If no User is signed in
- * @throws NotUnique                    If a unique key violation is attempted
  * @throws ServerError                  If some other error occurs
  */
 export const updateInviteCode = async (listId: string): Promise<List> => {
@@ -242,7 +279,7 @@ export const updateInviteCode = async (listId: string): Promise<List> => {
     if (!profile) {
         throw new Forbidden(
             "Must be signed in",
-            "ListActions.insert",
+            "ListActions.updateInviteCode",
         );
     }
 

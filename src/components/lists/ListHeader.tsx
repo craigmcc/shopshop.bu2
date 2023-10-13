@@ -59,7 +59,7 @@ export const ListHeader = (props: ListHeaderProps) => {
                         className="px-3 py-2 text-sm cursor-pointer"
                         onClick={() => onOpen(ModalType.LIST_EDIT, { list: props.list })}
                     >
-                        Edit List Settings
+                        Edit Settings
                         <Icons.Settings className="h-4 w-4 ml-auto" />
                     </DropdownMenuItem>
                 )}
