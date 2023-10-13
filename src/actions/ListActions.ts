@@ -115,7 +115,11 @@ export const find = async (profileId: string, listId: string)
  * @throws ServerError                  If some other error occurs
  */
 export const findByInviteCode = async (profileId: string, inviteCode: string): Promise<List | null> =>  {
-
+    logger.info({
+        context: "ListActions.findByInviteCode",
+        profileId: profileId,
+        inviteCode: inviteCode,
+    });
     try {
         const existingList = await db.list.findFirst({
             where: {
@@ -134,7 +138,6 @@ export const findByInviteCode = async (profileId: string, inviteCode: string): P
             "ListActions.findByInviteCode",
         );
     }
-
 }
 
 /**
@@ -202,7 +205,12 @@ export const insert = async (
  */
 export const insertMember =
     async (profileId: string, inviteCode: string, role: MemberRole = MemberRole.GUEST): Promise<List> => {
-
+    logger.info({
+        context: "ListActions.insertMember",
+        profileId: profileId,
+        inviteCode: inviteCode,
+        role: role,
+    });
     try {
         const list = await db.list.update({
             data: {
@@ -223,8 +231,20 @@ export const insertMember =
             "ListActions.insertMember",
         );
     }
+}
+
+/**
+ * Remove the specified Member from the specified List.
+ * Return the updated List.
+ *
+ * @param listId                        ID of the List to be updated
+ * @param memberId                      ID of the Member to be removed
+ */
+/*
+export const removeMember = async (listId: string, memberId: string): Promise<ListWithMembersWithProfiles> => {
 
 }
+*/
 
 /**
  * Update the specified List with the specified new data.
@@ -236,6 +256,12 @@ export const insertMember =
  * @throws ServerError                  If some other error occurs
  */
 export const update = async (listId: string, list: Prisma.ListUpdateInput): Promise<List> => {
+
+    logger.info({
+        context: "ListActions.update",
+        listId: listId,
+        list: list,
+    });
 
     const profile = await currentProfile();
     if (!profile) {
@@ -275,6 +301,11 @@ export const update = async (listId: string, list: Prisma.ListUpdateInput): Prom
  */
 export const updateInviteCode = async (listId: string): Promise<List> => {
 
+    logger.info({
+        context: "ListActions.updateInviteCode",
+        listId: listId,
+    });
+
     const profile = await currentProfile();
     if (!profile) {
         throw new Forbidden(
@@ -302,3 +333,17 @@ export const updateInviteCode = async (listId: string): Promise<List> => {
     }
 
 }
+
+/**
+ * Update the role for the specified Member of the specified List.
+ * Return the updated List.
+ *
+ * @param listId                        ID of the List to be updated
+ * @param memberId                      ID of the Member to be updated
+ * @param role                          New MemberRole to be assigned
+ */
+/*
+export const updateMemberRole = async (listId: string, memberId: string, role: MemberRole): Promise<ListWithMembersWithProfiles> => {
+
+}
+*/

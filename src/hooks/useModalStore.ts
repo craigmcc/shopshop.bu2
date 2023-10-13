@@ -18,6 +18,7 @@ import {
     MemberRole,
     Profile,
 } from "@prisma/client";
+import {ListWithMembersWithProfiles} from "@/types";
 
 // Internal Modules ----------------------------------------------------------
 
@@ -31,8 +32,8 @@ export enum ModalType {
     LIST_INSERT = "ListInsert",
     LIST_INVITE = "ListInvite",
     LIST_LEAVE = "ListLeave",
+    LIST_MEMBERS = "ListMembers",
     LIST_REMOVE = "ListRemove",
-    MEMBERS_EDIT = "MembersEdit",
 }
 
 /**
@@ -40,7 +41,7 @@ export enum ModalType {
  */
 interface ModalData {
     // Data models
-    list?: List,
+    list?: ListWithMembersWithProfiles,
     member?: Member,
     memberRole?: MemberRole,
     profile?: Profile,

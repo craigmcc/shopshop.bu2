@@ -74,7 +74,7 @@ export const ListHeader = (props: ListHeaderProps) => {
                 )}
                 {isAdmin && (
                     <DropdownMenuItem
-                        onClick={() => onOpen(ModalType.MEMBERS_EDIT, { list: props.list })}
+                        onClick={() => onOpen(ModalType.LIST_MEMBERS, { list: props.list })}
                         className="px-3 py-2 text-sm cursor-pointer"
                     >
                         Manage Members

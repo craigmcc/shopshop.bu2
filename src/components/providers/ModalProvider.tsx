@@ -20,6 +20,7 @@ import {useAuth} from "@clerk/nextjs";
 import {ListEditModal} from "@/components/lists/ListEditModal";
 import {ListInsertModal} from "@/components/lists/ListInsertModal";
 import {ListInviteModal} from "@/components/lists/ListInviteModal";
+import {ListMembersModal} from "@/components/lists/ListMembersModal";
 
 // Public Objects ------------------------------------------------------------
 
@@ -45,6 +46,7 @@ export const ModalProvider = () => {
             <ListEditModal/>
             <ListInsertModal/>
             <ListInviteModal/>
+            <ListMembersModal/>
         </>
     )
 

@@ -1,4 +1,4 @@
-// components/shared/AvatarImage.tsx
+// components/shared/UserAvatar.tsx
 
 /**
  * Generic rendering of a user avatar image with standard dimensions
