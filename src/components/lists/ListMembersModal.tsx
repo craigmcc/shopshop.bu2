@@ -16,6 +16,7 @@ import {MemberRole} from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
 
+import * as ListActions from "@/actions/ListActions";
 import {Icons} from "@/components/layout/Icons";
 import {LoadingSpinner} from "@/components/shared/LoadingSpinner";
 import {
@@ -44,10 +45,8 @@ import {ListWithMembersWithProfiles} from "@/types";
 // Public Objects ------------------------------------------------------------
 
 const roleIconMap: Map<MemberRole, JSX.Element> = new Map();
-roleIconMap.set(MemberRole.ADMIN, <Icons.Admin className="h-4 w-4 text-rose-500"/>);
-roleIconMap.set(MemberRole.GUEST, <Icons.Guest className="h-4 w-4"/>);
-
-// TODO - roleIconMap from members-modal.tsx???
+roleIconMap.set(MemberRole.ADMIN, <Icons.Admin className="h-4 w-4 ml-2 text-rose-500"/>);
+roleIconMap.set(MemberRole.GUEST, <Icons.Guest className="h-4 w-4 ml-2"/>);
 
 export const ListMembersModal = () => {
 
@@ -61,10 +60,10 @@ export const ListMembersModal = () => {
     const onKick = async (memberId: string) => {
         try {
             setLoadingId(memberId);
-            // TODO - server action to remove this member
-//            const updatedList: ListWithMembersWithProfiles = {};
+            const updatedList: ListWithMembersWithProfiles =
+                await ListActions.removeMember(list.id, memberId);
             router.refresh();
-//            onOpen(ModalType.LIST_MEMBERS, {list: updatedList})
+            onOpen(ModalType.LIST_MEMBERS, {list: updatedList});
         } catch (error) {
             console.log(error);
         } finally {
@@ -76,10 +75,10 @@ export const ListMembersModal = () => {
     const onRoleChange = async (memberId: string, role: MemberRole) => {
         try {
             setLoadingId(memberId);
-            // TODO - server action to update role
-//            const updatedList: ListWithMembersWithProfiles = {};
+            const updatedList: ListWithMembersWithProfiles =
+                await ListActions.updateMemberRole(list.id, memberId, role);
             router.refresh();
-//            onOpen(ModalType.LIST_MEMBERS, {list: updatedList});
+            onOpen(ModalType.LIST_MEMBERS, {list: updatedList});
         } catch (error) {
             console.log(error);
         } finally {
@@ -111,7 +110,7 @@ export const ListMembersModal = () => {
                                     {member.profile.email}
                                 </p>
                             </div>
-                            {/*list.profileId !== member.profileId &&*/ loadingId !== member.id && (
+                            {list.profileId !== member.profileId && loadingId !== member.id && (
                                 <div className="ml-auto">
                                     <DropdownMenu>
                                         <DropdownMenuTrigger>
@@ -137,7 +136,7 @@ export const ListMembersModal = () => {
                                                         <DropdownMenuItem
                                                             onClick={() => onRoleChange(member.id, "ADMIN")}
                                                         >
-                                                            <Icons.Admin className="h-4 w-4 mr-2" />
+                                                            <Icons.Admin className="h-4 w-4 mr-2 text-rose-500" />
                                                             Admin
                                                             {member.role === "ADMIN" && (
                                                                 <Icons.Check className="h-4 w-4 ml-auto"/>

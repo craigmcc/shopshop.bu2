@@ -31,10 +31,12 @@ import {ListWithMembersWithProfiles} from "@/types";
  * @param profileId                     ID of the Profile of the requesting User.
  */
 export const all = async (profileId: string): Promise<List[]> => {
+
     logger.info({
         context: "ProfileActions.all",
         profileId: profileId,
     });
+
     try {
         const lists = await db.list.findMany({
             orderBy: [
@@ -44,9 +46,9 @@ export const all = async (profileId: string): Promise<List[]> => {
                 members: {
                     some: {
                         profileId: profileId,
-                    }
-                }
-            }
+                    },
+                },
+            },
         });
         return lists;
     } catch (error) {
@@ -69,11 +71,13 @@ export const all = async (profileId: string): Promise<List[]> => {
  */
 export const find = async (profileId: string, listId: string)
     : Promise<ListWithMembersWithProfiles | null> => {
+
     logger.info({
         context: "ListActions.find",
         profileId: profileId,
         listId: listId,
     });
+
     try {
         // TODO - make the include stuff conditional?
         const list = await db.list.findUnique({
@@ -84,17 +88,17 @@ export const find = async (profileId: string, listId: string)
                     },
                     orderBy: {
                         role: "asc",
-                    }
-                }
+                    },
+                },
             },
             where: {
                 id: listId,
                 members: {
                     some: {
                         profileId: profileId,
-                    }
-                }
-            }
+                    },
+                },
+            },
         });
         return list;
     } catch (error) {
@@ -103,6 +107,7 @@ export const find = async (profileId: string, listId: string)
             "ListActions.find",
         );
     }
+
 }
 
 /**
@@ -115,11 +120,13 @@ export const find = async (profileId: string, listId: string)
  * @throws ServerError                  If some other error occurs
  */
 export const findByInviteCode = async (profileId: string, inviteCode: string): Promise<List | null> =>  {
+
     logger.info({
         context: "ListActions.findByInviteCode",
         profileId: profileId,
         inviteCode: inviteCode,
     });
+
     try {
         const existingList = await db.list.findFirst({
             where: {
@@ -127,8 +134,8 @@ export const findByInviteCode = async (profileId: string, inviteCode: string): P
                 members: {
                     some: {
                         profileId: profileId,
-                    }
-                }
+                    },
+                },
             },
         });
         return existingList;
@@ -138,6 +145,7 @@ export const findByInviteCode = async (profileId: string, inviteCode: string): P
             "ListActions.findByInviteCode",
         );
     }
+
 }
 
 /**
@@ -157,12 +165,14 @@ export const insert = async (
     list: Omit<Prisma.ListUncheckedCreateInput, "inviteCode" | "profileId">,
     memberRole: MemberRole
 ): Promise<List> => {
+
     logger.info({
         context: "ListActions.insert",
         list: list,
         memberRole: memberRole,
     });
     // TODO - validations!
+
     const profile = await currentProfile();
     if (!profile) {
         throw new Forbidden(
@@ -170,6 +180,7 @@ export const insert = async (
             "ListActions.insert",
         );
     }
+
     try {
         const result = await db.list.create({
             data: {
@@ -179,7 +190,7 @@ export const insert = async (
                 members: {
                     create: [
                         {profileId: profile.id, role: memberRole},
-                    ]
+                    ],
                 },
             },
         });
@@ -205,12 +216,14 @@ export const insert = async (
  */
 export const insertMember =
     async (profileId: string, inviteCode: string, role: MemberRole = MemberRole.GUEST): Promise<List> => {
+
     logger.info({
         context: "ListActions.insertMember",
         profileId: profileId,
         inviteCode: inviteCode,
         role: role,
     });
+
     try {
         const list = await db.list.update({
             data: {
@@ -231,6 +244,7 @@ export const insertMember =
             "ListActions.insertMember",
         );
     }
+
 }
 
 /**
@@ -240,11 +254,59 @@ export const insertMember =
  * @param listId                        ID of the List to be updated
  * @param memberId                      ID of the Member to be removed
  */
-/*
 export const removeMember = async (listId: string, memberId: string): Promise<ListWithMembersWithProfiles> => {
 
+    logger.info({
+        context: "ListActions.removeMember",
+        listId: listId,
+        memberId: memberId,
+    });
+
+    const profile = await currentProfile();
+    if (!profile) {
+        throw new Forbidden(
+            "Must be signed in",
+            "ListActions.removeMember",
+        );
+    }
+    // TODO - check admin role?
+
+    try {
+        const list = await db.list.update({
+            data: {
+                members: {
+                    deleteMany: {
+                        id: memberId,
+                        profileId: {
+                            not: profile.id,
+                        },
+                    },
+                },
+            },
+            include: {
+                members: {
+                    include: {
+                        profile: true,
+                    },
+                    orderBy: {
+                        role: "asc",
+                    },
+                },
+            },
+            where: {
+                id: listId,
+                profileId: profile.id,
+            },
+        });
+        return list;
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "ListActions.removeMember",
+        );
+    }
+
 }
-*/
 
 /**
  * Update the specified List with the specified new data.
@@ -255,7 +317,7 @@ export const removeMember = async (listId: string, memberId: string): Promise<Li
  * @throws Forbidden                    If no User is signed in
  * @throws ServerError                  If some other error occurs
  */
-export const update = async (listId: string, list: Prisma.ListUpdateInput): Promise<List> => {
+export const update = async (listId: string, list: Prisma.ListUpdateInput): Promise<ListWithMembersWithProfiles> => {
 
     logger.info({
         context: "ListActions.update",
@@ -275,10 +337,20 @@ export const update = async (listId: string, list: Prisma.ListUpdateInput): Prom
     try {
         const result = db.list.update({
             data: list,
+            include: {
+                members: {
+                    include: {
+                        profile: true,
+                    },
+                    orderBy: {
+                        role: "asc",
+                    },
+                },
+            },
             where: {
                 id: listId,
                 profileId: profile.id,    // TODO - only list creator allowed
-            }
+            },
         });
         return result;
     } catch (error) {
@@ -299,7 +371,7 @@ export const update = async (listId: string, list: Prisma.ListUpdateInput): Prom
  * @throws Forbidden                    If no User is signed in
  * @throws ServerError                  If some other error occurs
  */
-export const updateInviteCode = async (listId: string): Promise<List> => {
+export const updateInviteCode = async (listId: string): Promise<ListWithMembersWithProfiles> => {
 
     logger.info({
         context: "ListActions.updateInviteCode",
@@ -318,6 +390,16 @@ export const updateInviteCode = async (listId: string): Promise<List> => {
         const list = await db.list.update({
             data: {
               inviteCode: uuidv4(),
+            },
+            include: {
+                members: {
+                    include: {
+                        profile: true,
+                    },
+                    orderBy: {
+                        role: "asc",
+                    },
+                },
             },
             where: {
                 id: listId,
@@ -342,8 +424,62 @@ export const updateInviteCode = async (listId: string): Promise<List> => {
  * @param memberId                      ID of the Member to be updated
  * @param role                          New MemberRole to be assigned
  */
-/*
 export const updateMemberRole = async (listId: string, memberId: string, role: MemberRole): Promise<ListWithMembersWithProfiles> => {
 
+    logger.info({
+        context: "ListActions.updateMemberRole",
+        listId: listId,
+        memberId: memberId,
+        role: role,
+    });
+
+    const profile = await currentProfile();
+    if (!profile) {
+        throw new Forbidden(
+            "Must be signed in",
+            "ListActions.updateMemberRole",
+        );
+    }
+    // TODO - check admin role?
+
+    try {
+        const list = await db.list.update({
+            data: {
+                members: {
+                    update: {
+                        where: {
+                            id: memberId,
+                            profileId: {
+                                not: profile.id, // Disallow accidentally changing owner's own role
+                            },
+                        },
+                        data: {
+                            role,
+                        },
+                    },
+                },
+            },
+            include: {
+                members: {
+                    include: {
+                        profile: true,
+                    },
+                    orderBy: {
+                        role: "asc",
+                    },
+                },
+            },
+            where: {
+                id: listId,
+                profileId: profile.id,
+            },
+        });
+        return list;
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "ListActions.removeMember",
+        );
+    }
+
 }
-*/
