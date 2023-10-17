@@ -10,6 +10,62 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// Category (within a List) that groups related Items
+model Category {
+  /// Primary key for this Category
+  id   String @id @default(uuid())
+  /// Name of this Category
+  name String @db.Text
+
+  /// Created at timestamp
+  createdAt DateTime @default(now())
+  /// Updated at timestamp
+  updatedAt DateTime @updatedAt
+
+  /// Items belonging to this Category
+  items Item[]
+
+  /// List ID of the List this Category belongs to
+  listId String
+  /// List this Category belongs to
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  @@index([listId])
+  @@map("categories")
+}
+
+/// Item (within a List and a Category) that can appear in a particular List
+model Item {
+  /// Primary key for this Item
+  id       String  @id @default(uuid())
+  /// Has this Item been marked as already acquired?
+  checked  Boolean @default(false)
+  /// Name of this Item
+  name     String  @db.Text
+  /// Optional notes associated with this Item
+  notes    String? @db.Text
+  /// Has this Item been marked as currently active on a List?
+  selected Boolean @default(false)
+
+  /// Created at timestamp
+  createdAt DateTime @default(now())
+  /// Updated at timestamp
+  updatedAt DateTime @updatedAt
+
+  /// Category ID of the Category this Item belongs to
+  categoryId String
+  /// Category this Item belongs to
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  /// List ID of the List this Item belongs to
+  listId     String
+  /// List this Category belongs to
+  list       List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@index([listId])
+  @@map("items")
+}
+
 /// Individual shopping list
 model List {
   /// Primary key for this List
@@ -23,6 +79,12 @@ model List {
   createdAt DateTime @default(now())
   /// Updated at timestamp
   updatedAt DateTime @updatedAt
+
+  /// Categories belonging to this List
+  categories Category[]
+
+  /// Items belonging to this List
+  items Item[]
 
   /// Members of this List
   members   Member[]
