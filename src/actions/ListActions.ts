@@ -11,15 +11,17 @@
 // External Modules ----------------------------------------------------------
 
 import {v4 as uuidv4} from "uuid";
-import {List, Member, MemberRole, Prisma, Profile} from "@prisma/client";
+import {List, MemberRole, Prisma} from "@prisma/client";
 
 // Internal Modules ----------------------------------------------------------
 
 import {db} from "@/lib/db";
-import {BadRequest, Forbidden, NotFound, NotUnique, ServerError} from "@/lib/HttpErrors";
+import {Forbidden, NotFound, ServerError} from "@/lib/HttpErrors";
 import {currentProfile} from "@/lib/clerk";
 import logger from "@/lib/ServerLogger";
 import {ListWithMembersWithProfiles} from "@/types";
+import CategoryUncheckedCreateInput = Prisma.CategoryUncheckedCreateInput;
+import {InitialListData} from "@/lib/InitialListData";
 
 
 // Public Objects ------------------------------------------------------------
@@ -246,6 +248,82 @@ export const insertMember =
     }
 
 }
+
+/**
+ * Populate the Categories and Items for this List from the specified
+ * InitialListData, erasing any previous Categories and Items first.
+ *
+ * @param listId                        ID of the List to be populated
+ *
+ * @throws NotFound                     If the specified List cannot be found
+ * @throws ServerError                  If a low level error occurs
+ */
+export const populate = async (listId: string): Promise<void> => {
+
+    logger.info({
+        context: "ListActions.populate",
+        listId: listId,
+    });
+
+    // TODO - authenticate?
+    const list = await db.list.findUnique({
+        where: {
+            id: listId,
+        }
+    });
+    if (!list) {
+        throw new NotFound(
+            `listId: Missing List '${listId}'`,
+            "ListActions.populate",
+        );
+    }
+
+    try {
+
+        // Erase all current Items and Categories (via cascade) for this List
+        await db.item.deleteMany({
+            where: {
+                listId: listId,
+            }
+        });
+
+        // Create each defined Category, keeping them around for access to IDs
+        const categories: CategoryUncheckedCreateInput[] = [];
+        for (const element of InitialListData) {
+            const category = {
+                listId: listId,
+                name: element[0],
+            };
+            categories.push(await db.category.create({ data: category }));
+        }
+
+        // For each created category, create the relevant Items
+        for (let i = 0; i < categories.length; i++)  {
+            const element = InitialListData[i];
+            if (element.length > 1) {
+                for (let j = 1; j < element.length; j++) {
+                    await db.item.create({
+                        data : {
+                            categoryId: categories[i].id!,
+                            checked: false,
+                            listId: listId,
+                            name: element[j],
+                            selected: false,
+                        },
+                    });
+                }
+            }
+        }
+
+    } catch (error) {
+        throw new ServerError(
+            error as Error,
+            "ListActions.populate",
+        );
+    }
+
+}
+
 
 /**
  * Remove the specified Member from the specified List.
