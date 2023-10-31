@@ -3,11 +3,11 @@
 # Please see the documentation for all configuration options:
 # https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
-version: 2
-updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    #    target-branch: "v2.0"
-    versioning-strategy: "increase"
+#version: 2
+#updates:
+#  - package-ecosystem: "npm"
+#    directory: "/"
+#    schedule:
+#      interval: "weekly"
+#    #    target-branch: "v2.0"
+#    versioning-strategy: "increase"
